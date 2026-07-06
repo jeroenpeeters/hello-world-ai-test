@@ -3,6 +3,12 @@ const { URL } = require('url');
 
 const port = process.env.PORT || 3000;
 
+const EMOJIS = ['😀', '🎉', '🚀', '🌟', '🐙', '🍕', '🌈', '🔥', '🐢', '🎈'];
+
+function randomEmoji() {
+  return EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+}
+
 function escapeHtml(text) {
   return text
     .replace(/&/g, '&amp;')
@@ -16,7 +22,7 @@ const server = http.createServer((req, res) => {
   const { pathname, searchParams } = new URL(req.url, `http://${req.headers.host}`);
   if (pathname === '/') {
     const name = searchParams.get('name');
-    const message = name ? `Hello World, ${escapeHtml(name)}` : 'Hello World';
+    const message = `${name ? `Hello World, ${escapeHtml(name)}` : 'Hello World'} ${randomEmoji()}`;
     res.writeHead(200, { 'Content-Type': 'text/html' });
     res.end(`<h1>${message}</h1>`);
     return;
