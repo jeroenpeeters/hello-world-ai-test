@@ -1,11 +1,24 @@
 const http = require('http');
+const { URL } = require('url');
 
 const port = process.env.PORT || 3000;
 
+function escapeHtml(text) {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 const server = http.createServer((req, res) => {
-  if (req.url === '/') {
+  const { pathname, searchParams } = new URL(req.url, `http://${req.headers.host}`);
+  if (pathname === '/') {
+    const name = searchParams.get('name');
+    const message = name ? `Hello World, ${escapeHtml(name)}` : 'Hello World';
     res.writeHead(200, { 'Content-Type': 'text/html' });
-    res.end('<h1>Hello World</h1>');
+    res.end(`<h1>${message}</h1>`);
     return;
   }
   res.writeHead(404, { 'Content-Type': 'text/plain' });
